@@ -1,7 +1,6 @@
 package com.multigacha.intercambio.service;
 
 import java.util.Date;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,9 +17,6 @@ public class IntercambioService {
 
     @Autowired
     private ProductoClienteRepo repo2;
-
-
-
 
     public Intercambio crearIntercambio (IntercambioRequestDTO dto) {
         ProductoCliente inventarioA = repo2.findByIdProducto(dto.getIdProductoA());
