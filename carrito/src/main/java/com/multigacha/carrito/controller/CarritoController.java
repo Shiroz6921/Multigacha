@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.multigacha.carrito.dto.CarritoDTO;
 import com.multigacha.carrito.model.Carrito;
-import com.multigacha.carrito.model.ProductosCarritos;
 import com.multigacha.carrito.service.CarritoService;
 
 @RestController
@@ -29,38 +28,16 @@ public class CarritoController {
     }
 
     @PostMapping("/{id}/agregar")
-    public ResponseEntity<?> agregar(@PathVariable Integer id, @RequestBody CarritoDTO dto) {
-        try {
-            return ResponseEntity.ok(service.agregarProducto(id, dto));
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }    
+    public ResponseEntity<Carrito> agregar(@PathVariable Integer id, @RequestBody CarritoDTO dto) {
+        return ResponseEntity.ok(service.agregarProducto(id, dto));
+    }
+    @GetMapping
+    public ResponseEntity<List<Carrito>> listar() {
+        return ResponseEntity.ok(service.listarTodos());
     }
 
-    @GetMapping("/todo")
-    public ResponseEntity<List<ProductosCarritos>> listarTodo() {
-        List<ProductosCarritos> lista = service.obtenerTodo();
-        if (lista.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.ok(lista);
-        }
-    }
     @GetMapping("/{id}")
-    public ResponseEntity<ProductosCarritos> buscarProductoPorId(@PathVariable Integer id) {
-        try{
-            return ResponseEntity.ok(service.buscarPorId(id));
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
-    
-    }  
-    @GetMapping("/carrito/{carritoId}")
-    public ResponseEntity<List<ProductosCarritos>> buscarProductosPorCarritoId(@PathVariable Integer carritoId) {
-        List<ProductosCarritos> productos = service.buscarCarrito(carritoId);
-        if (productos.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.ok(productos);
+    public ResponseEntity<Carrito> buscarPorId(Integer id){
+        return ResponseEntity.ok(service.buscarId(id));
     }
 }

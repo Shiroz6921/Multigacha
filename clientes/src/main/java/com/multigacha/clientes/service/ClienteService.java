@@ -46,7 +46,7 @@ public class ClienteService {
         //fecha e inventario se crea solo
         return repo.save(nuevo);
 
-        /*CONTACTO DEBERIA CREARSE JUNTO CON EL CLIENTE NO POR SE PARADO    
+        /*CONTACTO DEBERIA CREARSE JUNTO CON EL CLIENTE NO POR SEPARADO    
         EJEMPLO 
         ContactoDTO contactoDTO = new ContactoDTO();
         contactoDTO.setTelefono(dto.getContacto().getTelefono());

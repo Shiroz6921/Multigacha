@@ -5,7 +5,6 @@ import com.multigacha.compra.repository.CompraRepository;
 import com.multigacha.compra.client.*;
 import com.multigacha.compra.dto.*;
 
-import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.Date;

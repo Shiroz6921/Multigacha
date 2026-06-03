@@ -1,7 +1,4 @@
-package com.multigacha.catalogo.model;
-
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
+package com.multigacha.carrito.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -19,25 +16,20 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "producto")
-public class Producto {
+@Table(name = "productos_carrito")
+public class ProductosCarritos {
+
     @Id
-    @Column(name ="producto_id")
+    @Column(name = "productos_carrito_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(nullable = false)
-    private String nombre;
-
-    @Column(nullable = false)
-    private double precio;
-
     @ManyToOne
-    @JoinColumn(name = "categoria_id")
-    @JsonIgnore
-    private Categoria categoria;
+    @JoinColumn(name = "carrito_id")
+    private Carrito carrito;
 
-
-    @Column (nullable = false)
-    private Integer stock;
+    private Integer productoId; 
+    private String nombre;
+    private Integer cantidad;
+    private Double precio;
 }

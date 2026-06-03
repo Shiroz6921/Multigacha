@@ -43,8 +43,8 @@ public class CatalogoController {
     }
 
     @GetMapping("/todo")
-    public ResponseEntity<List<Producto>> listarTodo() {
-        List<Producto> lista = service.obtenerTodo();
+    public ResponseEntity<List<Categoria>> listarTodo() {
+        List<Categoria> lista = service.obtenerTodo();
         if (lista.isEmpty()) {
             return ResponseEntity.noContent().build();
         } else {
