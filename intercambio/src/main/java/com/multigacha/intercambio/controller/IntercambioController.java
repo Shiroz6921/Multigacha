@@ -21,15 +21,15 @@ public class IntercambioController {
     @Autowired
     private IntercambioService service;
 
-    @GetMapping
-    public ResponseEntity<List<Intercambio>> listarIntercambios() {
-        List<Intercambio> lista = service.listarIntercambios();
-        if (lista.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.ok(lista);
-        }
-    }
+  //  @GetMapping
+  //  public ResponseEntity<List<Intercambio>> listarIntercambios() {
+      //  List<Intercambio> lista = service.listarIntercambios();
+     //   if (lista.isEmpty()) {
+     //       return ResponseEntity.noContent().build();
+      //  } else {
+        //    return ResponseEntity.ok(lista);
+    //    }
+   // }
 
     //@PutMapping("/intercambiar")
    // public ResponseEntity<Intercambio> crearIntercambio(@RequestBody Integer idProducto,
@@ -45,7 +45,7 @@ public class IntercambioController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminarIntercambio(@PathVariable Integer id) {
         try {
-            service.eliminarIntercambio(id);
+           // service.eliminarIntercambio(id);
             return ResponseEntity.noContent().build();
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
