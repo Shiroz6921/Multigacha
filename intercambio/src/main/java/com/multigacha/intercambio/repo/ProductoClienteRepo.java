@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import com.multigacha.intercambio.model.ProductoCliente;
 
 @Repository
-public interface ProductoClienteRepo extends JpaRepository <ProductoCliente, Integer> {
+public interface ProductoClienteRepo extends JpaRepository<ProductoCliente, Integer> {
 
     List<ProductoCliente> findByIdCliente(Integer idCliente);
 
@@ -17,6 +17,4 @@ public interface ProductoClienteRepo extends JpaRepository <ProductoCliente, Int
     Integer findIdClienteById(Integer id);
 
     Integer findIdProductoById(Integer id);
-
-
 }

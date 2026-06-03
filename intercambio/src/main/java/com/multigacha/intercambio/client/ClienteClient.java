@@ -11,6 +11,4 @@ public interface ClienteClient {
     @GetMapping("api/v1/clientes/{id}")
     ClienteDTO buscarDTO(@PathVariable("id") Integer id);
 
-    
-
 }

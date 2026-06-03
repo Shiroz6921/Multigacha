@@ -1,6 +1,8 @@
 package com.multigacha.catalogo.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -32,7 +34,9 @@ public class Producto {
 
     @ManyToOne
     @JoinColumn(name = "categoria_id")
+    @JsonIgnore
     private Categoria categoria;
+
 
     @Column (nullable = false)
     private Integer stock;

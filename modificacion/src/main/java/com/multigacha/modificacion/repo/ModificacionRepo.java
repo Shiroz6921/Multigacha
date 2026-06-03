@@ -11,6 +11,7 @@ import com.multigacha.modificacion.model.Modificacion;
 
 @Repository
 public interface ModificacionRepo extends JpaRepository<Modificacion, Integer> {
+
     Empleado findEmpleadoById(Integer id);
 
     Integer findIdProductoById(Integer id);

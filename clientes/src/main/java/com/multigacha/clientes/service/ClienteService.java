@@ -37,22 +37,30 @@ public class ClienteService {
         return repo.findById(id).orElseThrow(() -> new RuntimeException("Cliente no encontrado"));
     }
 
-    public Cliente clienteMasInventario(ClienteDTO dto) {
-
+    //NUEVO
+    public Cliente clienteMasInventario (ClienteDTO dto){
         Cliente nuevo = new Cliente();
         nuevo.setRun(dto.getRun());
         nuevo.setNombre(dto.getNombre());
         nuevo.setApellido(dto.getApellido());
-        Cliente guardado = repo.save(nuevo);
+        //fecha e inventario se crea solo
+        return repo.save(nuevo);
 
-        InventarioCliente inventario = new InventarioCliente();
-        inventario.setCliente(guardado);
-        inventario.setCantidadProd(0);
-        inventario.setNombre("Inventario de " + guardado.getNombre());
-        repoInv.save(inventario);
+        /*CONTACTO DEBERIA CREARSE JUNTO CON EL CLIENTE NO POR SEPARADO    
+        EJEMPLO 
+        ContactoDTO contactoDTO = new ContactoDTO();
+        contactoDTO.setTelefono(dto.getContacto().getTelefono());
+        contactoDTO.setDireccion(dto.getContacto().getDireccion());
 
-    return guardado;
-}
+        contacto.crearContacto(nuevo.getId(),contactoDTO);*/
+    }
+
+        /* 
+        public Cliente agregarCliente(Cliente cliente) {
+            //no se puede CREAR ya que necesitas un dato date a no ser que pongas "1995-05-22T14:30:00.000+00:00"  
+            return repo.save(cliente);
+        }
+        */
 
     public void borrarClientePorId(Integer id) {
         repo.deleteById(id);
@@ -71,6 +79,12 @@ public class ClienteService {
 
         contactoDTO.setDireccion(nuevo.getContacto().getDireccion());
         contactoDTO.setTelefono(nuevo.getContacto().getTelefono());
+        //falta el PUT de contacto, no se guarda en ningun lugar la modificacion de contacto 
+        
+        /*no se guardaba la modificacion
+        linea original = return viejo;*/
+
+        //NUEVO
         return repo.save(viejo);
     }
 

@@ -18,11 +18,18 @@ public class CatalogoService {
 
     @Autowired
     private ProductoRepository repo2;
-
+    
     public Categoria guardarExpansion(Categoria categoria) {
-        return repo1.save(categoria);
-    }
+    categoria.setId(null);
 
+    if (categoria.getProductos() != null) {
+        categoria.getProductos().forEach(p -> {p.setCategoria(categoria);
+            p.setId(null); 
+        });
+    }
+    return repo1.save(categoria);
+    }
+    
     public Producto agregarCarta(ProductoDTO dto) {
         Categoria categoria = repo1.findById(dto.getCategoriaId())
             .orElseThrow(() -> new RuntimeException("Categoría no encontrada"));
@@ -36,8 +43,8 @@ public class CatalogoService {
         return repo2.save(nuevo);   
     }
 
-    public List<Producto> obtenerTodo() {
-        return repo2.findAll();
+    public List<Categoria> obtenerTodo() {
+        return repo1.findAll();
     }
     
     public Producto buscarPorId(Integer id) {
