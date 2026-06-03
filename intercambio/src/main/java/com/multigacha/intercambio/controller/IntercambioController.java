@@ -7,14 +7,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.multigacha.intercambio.dto.IntercambioRequestDTO;
 import com.multigacha.intercambio.model.Intercambio;
-import com.multigacha.intercambio.model.ProductoCliente;
 import com.multigacha.intercambio.service.IntercambioService;
 
 @RestController
@@ -22,5 +21,30 @@ import com.multigacha.intercambio.service.IntercambioService;
 public class IntercambioController {
     @Autowired
     private IntercambioService service;
+
+     @PutMapping("/intercambiar")
+    public ResponseEntity<Intercambio> crearIntercambio(@RequestBody IntercambioRequestDTO dto) {
+        try {
+            return ResponseEntity.ok(service.crearIntercambio(dto));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(null);
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> eliminarIntercambio(@PathVariable Integer id) {
+        try {
+            service.eliminarIntercambio(id);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("/listar")
+    public ResponseEntity<List<Intercambio>> listarTodosLosIntercambios() {
+        List<Intercambio> intercambios = service.obtenerTodos();
+        return ResponseEntity.ok(intercambios);
+    }
 
 }
