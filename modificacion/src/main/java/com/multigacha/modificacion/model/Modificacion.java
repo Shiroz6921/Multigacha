@@ -1,7 +1,7 @@
 package com.multigacha.modificacion.model;
 
 import java.util.Date;
-
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -24,6 +24,8 @@ public class Modificacion {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+
+    @JsonFormat(pattern = "DD/MM/YYYY", timezone = "GMT-4")
     @Column(nullable = false)
     private Date fecha;
 
