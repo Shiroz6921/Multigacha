@@ -16,13 +16,18 @@ import com.multigacha.intercambio.dto.IntercambioRequestDTO;
 import com.multigacha.intercambio.model.Intercambio;
 import com.multigacha.intercambio.service.IntercambioService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
 @RequestMapping("/api/v1/intercambios")
+@Tag(name = "Intercambio", description = "Operacion Intercambio")
 public class IntercambioController {
     @Autowired
     private IntercambioService service;
 
-     @PutMapping("/intercambiar")
+    @PutMapping("/intercambiar")
+    @Operation(summary = "Crea un nuevo intercambio entre clientes.", description = "Recibe un objeto IntercambioRequestDTO con los detalles del intercambio a realizar, incluyendo los IDs de los productos y clientes involucrados, y retorna el intercambio creado con su ID asignado.")
     public ResponseEntity<Intercambio> crearIntercambio(@RequestBody IntercambioRequestDTO dto) {
         try {
             return ResponseEntity.ok(service.crearIntercambio(dto));
@@ -32,6 +37,7 @@ public class IntercambioController {
     }
 
     @DeleteMapping("/{id}")
+    @Operation(summary = "Elimina un intercambio existente.", description = "Elimina un intercambio específico según su ID. Retorna una respuesta de éxito si la operación es exitosa.")
     public ResponseEntity<Void> eliminarIntercambio(@PathVariable Integer id) {
         try {
             service.eliminarIntercambio(id);
@@ -42,6 +48,7 @@ public class IntercambioController {
     }
 
     @GetMapping("/listar")
+    @Operation(summary = "Lista todos los intercambios.", description = "Retorna una lista con todos los intercambios registrados.")
     public ResponseEntity<List<Intercambio>> listarTodosLosIntercambios() {
         List<Intercambio> intercambios = service.obtenerTodos();
         return ResponseEntity.ok(intercambios);

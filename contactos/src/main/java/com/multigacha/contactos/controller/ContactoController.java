@@ -16,13 +16,18 @@ import org.springframework.web.bind.annotation.RestController;
 import com.multigacha.contactos.model.Contacto;
 import com.multigacha.contactos.service.ContactoService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
 @RequestMapping("api/v1/contactos")
+@Tag(name = "Contactos", description = "Operacion Contactos")
 public class ContactoController {
     @Autowired
     private ContactoService service;
 
     @GetMapping("/lista")
+    @Operation(summary = "Lista todos los contactos registrados en el sistema.", description = "Retorna una lista de objetos Contacto con los detalles de cada contacto registrado. Si no hay contactos, retorna una respuesta sin contenido.")
     public ResponseEntity<List<Contacto>> listar(){
         List<Contacto> lista = service.listarContactos();
         if(lista.equals(null)){
@@ -33,6 +38,7 @@ public class ContactoController {
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "Busca un contacto por su ID.", description = "Retorna los detalles de un contacto específico según su ID. Si no se encuentra, retorna una respuesta de no encontrado.")
     public ResponseEntity<Contacto> buscarContacto(@PathVariable Integer id){
         try {
             Contacto contacto = service.getContacto(id);
@@ -43,6 +49,7 @@ public class ContactoController {
     }
 
     @PostMapping("/add")
+    @Operation(summary = "Agrega un nuevo contacto.", description = "Registra un nuevo contacto en el sistema. Retorna una respuesta de éxito si el contacto es agregado correctamente.")
     public ResponseEntity<Void> agregarContacto(@RequestBody Contacto contacto){
         try {
             service.addContacto(contacto);
@@ -53,6 +60,7 @@ public class ContactoController {
     }
     
     @PutMapping("/updt")
+    @Operation(summary = "Actualiza la información de un contacto existente.", description = "Modifica los datos de un contacto específico según su ID. Retorna el contacto actualizado si la operación es exitosa.")
     public ResponseEntity<Contacto> actualizarContacto(@RequestBody Contacto contactoNuevo){
         Contacto contacto = service.actualizarContacto(contactoNuevo);
         if(contacto.equals(null)){
@@ -63,6 +71,7 @@ public class ContactoController {
     }
 
     @DeleteMapping("/eliminar/{id}")
+    @Operation(summary = "Elimina un contacto existente.", description = "Elimina un contacto específico según su ID. Retorna una respuesta de éxito si la operación es exitosa.")
     public ResponseEntity<Void> eliminarContacto(@PathVariable Integer id){
         try {
             service.deleteContacto(id);

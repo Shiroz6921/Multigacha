@@ -17,9 +17,9 @@ public class DataLoader {
             if(repo1.count()==0 && repo2.count()==0){
                 Categoria c1=repo1.save(new Categoria(null,"Espada y Escudo","Pokemon",null));
 
-                Producto p1=repo2.save(new Producto(null,"Pikachu",10000,c1,2));
-                Producto p2=repo2.save(new Producto(null,"Charmander",15000,c1,4));
-                Producto p3=repo2.save(new Producto(null,"Charizard",10000,c1,6));
+                repo2.save(new Producto(null,"Pikachu",10000,c1,2));
+                repo2.save(new Producto(null,"Charmander",15000,c1,4));
+                repo2.save(new Producto(null,"Charizard",10000,c1,6));
             }
         };
     }

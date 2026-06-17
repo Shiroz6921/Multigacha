@@ -3,6 +3,7 @@ package com.multigacha.catalogo.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -24,12 +25,15 @@ public class Producto {
     @Id
     @Column(name ="producto_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Schema(description = "ID unico del producto.",example = ("1"))
     private Integer id;
 
     @Column(nullable = false)
+    @Schema(description = "Nombre del producto.",example = ("Pikachu ex"))
     private String nombre;
 
     @Column(nullable = false)
+    @Schema(description = "Precio del producto.",example = ("19.99"))
     private double precio;
 
     @ManyToOne
@@ -39,5 +43,6 @@ public class Producto {
 
 
     @Column (nullable = false)
+    @Schema(description = "Stock del producto.",example = ("10"))
     private Integer stock;
 }

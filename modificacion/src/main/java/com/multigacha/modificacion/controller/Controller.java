@@ -13,13 +13,18 @@ import com.multigacha.modificacion.model.Empleado;
 import com.multigacha.modificacion.model.Modificacion;
 import com.multigacha.modificacion.service.ModificacionService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
 @RequestMapping("api/v1/modificacion")
+@Tag(name = "Modificacion", description = "Operacion Modificacion")
 public class Controller {
     @Autowired
     private ModificacionService service;
 
     @GetMapping("/empleados")
+    @Operation(summary = "Lista todos los empleados registrados.", description = "Retorna una lista de todos los empleados registrados en el sistema, incluyendo sus detalles como nombre, apellido e ID de contacto.")
     public ResponseEntity<List<Empleado>> listarEmpleados() {
         List<Empleado> lista = service.listarEmpleados();
         if (lista.isEmpty()) {
@@ -30,6 +35,7 @@ public class Controller {
     }
 
     @GetMapping("/modificaciones")
+    @Operation(summary = "Lista todas las modificaciones registradas.", description = "Retorna una lista de todas las modificaciones realizadas en el sistema, incluyendo detalles como fecha, empleado responsable e ID del producto modificado.")
     public ResponseEntity<List<Modificacion>> listarModificaciones() {
         List<Modificacion> lista = service.listarModificaciones();
         if (lista.isEmpty()) {
@@ -40,6 +46,7 @@ public class Controller {
     }
 
     @GetMapping("/productos/modificaciones")
+    @Operation(summary = "Lista las modificaciones por producto.", description = "Retorna una lista de modificaciones realizadas para un producto específico, incluyendo detalles como fecha y empleado responsable.")
     public ResponseEntity<List<Modificacion>> listarModificacionesPorProducto(Integer idProducto) {
         List<Modificacion> lista = service.mostrarModificacionesPorProducto(idProducto);
         if (lista.isEmpty()) {
@@ -50,6 +57,7 @@ public class Controller {
     }
 
     @GetMapping("/empleados/modificaciones/{id}")
+    @Operation(summary = "Lista las modificaciones por empleado.", description = "Retorna una lista de modificaciones realizadas por un empleado específico, identificado por su ID, incluyendo detalles como fecha y ID del producto modificado.")
     public ResponseEntity<List<Modificacion>> listarModificacionesPorEmpleado(@PathVariable Integer idEmpleado) {
         try {
             Empleado empleado = service.getEmpleado(idEmpleado);

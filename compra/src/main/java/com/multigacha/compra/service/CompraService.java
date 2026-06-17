@@ -51,7 +51,7 @@ public class CompraService {
     CompraBoletaDTO c1 = new CompraBoletaDTO(compraGuardada, boletaGenerada);
 
     return c1;
-}
+    }
     public List<Compra> listar(){
         return repo.findAll();
     }

@@ -17,13 +17,18 @@ import com.multigacha.clientes.dto.ClienteDTO;
 import com.multigacha.clientes.model.Cliente;
 import com.multigacha.clientes.service.ClienteService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
 @RequestMapping("/api/v1/clientes")
+@Tag(name = "Clientes", description = "Operacion Clientes")
 public class ClienteController {
     @Autowired
     private ClienteService servicio;
 
     @GetMapping
+    @Operation(summary = "Lista todos los clientes registrados en el sistema.", description = "Retorna una lista de objetos Cliente con los detalles de cada cliente registrado. Si no hay clientes, retorna una respuesta sin contenido.")
     public ResponseEntity<List<Cliente>> listar() {
         if (servicio.mostrarClientes().isEmpty()) {
             return ResponseEntity.noContent().build();
@@ -33,11 +38,13 @@ public class ClienteController {
     }
 
     @PostMapping
+    @Operation(summary = "Crea un nuevo cliente con su inventario asociado.", description = "Recibe un objeto ClienteDTO con los detalles del cliente a crear, incluyendo su inventario inicial. Retorna el cliente creado con su ID asignado y el inventario asociado.")
     public ResponseEntity<Cliente> crear (@RequestBody ClienteDTO dto) {
         return ResponseEntity.ok(servicio.clienteMasInventario(dto));
     }
 
     @DeleteMapping("/{id}")
+    @Operation(summary = "Elimina un cliente por su ID, junto con su inventario asociado.", description = "Recibe el ID del cliente a eliminar. Si el cliente existe, se elimina junto con su inventario y retorna una respuesta sin contenido. Si el cliente no existe, retorna una respuesta de no encontrado.")
     public ResponseEntity<Void> eliminar(@PathVariable Integer id) {
         try {
             servicio.borrarClientePorId(id);
@@ -48,6 +55,7 @@ public class ClienteController {
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "Busca un cliente por su ID.", description = "Recibe el ID del cliente a buscar. Si el cliente existe, retorna el objeto Cliente con sus detalles. Si el cliente no existe, retorna una respuesta de no encontrado.")
     public ResponseEntity<Cliente> buscarPorId(@PathVariable Integer id) {
         try {
             return ResponseEntity.ok(servicio.mostrarPorId(id));
@@ -57,6 +65,7 @@ public class ClienteController {
     }
 
     @PutMapping("/actualizar/{id}")
+    @Operation(summary = "Actualiza los datos de un cliente por su ID.", description = "Recibe el ID del cliente a actualizar y un objeto ClienteDTO con los nuevos datos. Si el cliente existe, retorna el objeto Cliente actualizado. Si el cliente no existe, retorna una respuesta de no encontrado.")
     public ResponseEntity<Cliente> actualizar(@PathVariable Integer id, @RequestBody ClienteDTO nuevo) {
         try {
             return ResponseEntity.ok(servicio.modificarCliente(id, nuevo));
