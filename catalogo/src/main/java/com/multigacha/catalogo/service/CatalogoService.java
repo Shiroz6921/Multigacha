@@ -60,4 +60,14 @@ public class CatalogoService {
         a.setStock(a.getStock()-cantidad);
         return repo2.save(a);
     }
+    
+
+
+    public void eliminarProducto(Integer id) {
+        if (!repo2.existsById(id)) {
+            throw new RuntimeException("Producto no encontrado");
+        }
+        repo2.deleteById(id);
+        
+    }
 }

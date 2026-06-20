@@ -9,5 +9,5 @@ import lombok.Data;
 public class CarritoDTO {
     private Integer id;
     private Double total;
-    private List<ProductoCarritoDTO> productos;
+    private List<ProductoCarritoDTO> items;
 }

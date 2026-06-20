@@ -18,34 +18,38 @@ public class CompraService {
     @Autowired private CarritoClient carritoClient;
     @Autowired private CatalogoClient catalogoClient;
     @Autowired private BoletaClient boletaClient;
+    @Autowired private IntercambioClient intercambioClient;
 
     public CompraBoletaDTO procesarCompraDesdeCarrito(Integer idComprador, Integer idCarrito) {
-    List<ProductoCarritoDTO> items = carritoClient.buscarProductosPorCarritoId(idCarrito);
+        
+        CarritoDTO carrito = carritoClient.buscarPorId(idCarrito);
 
-    if (items == null || items.isEmpty()) {
-        throw new RuntimeException("El carrito está vacío.");
-    }
+        if(carrito.getItems() == null || carrito.getItems().isEmpty()) {
+            throw new RuntimeException("El carrito está vacío.");
+        }
 
-    double total = 0.0;
+        for (ProductoCarritoDTO item : carrito.getItems()) {
+            
+            catalogoClient.reducirStock(item.getProductoId(), item.getCantidad());
 
-    for (ProductoCarritoDTO item : items) {
-        catalogoClient.reducirStock(item.getProductoId(), item.getCantidad());
-        total += (item.getPrecio() * item.getCantidad());
-    }
+            for (int i = 0; i < item.getCantidad(); i++) {
+                intercambioClient.transferirCarta(0, idComprador, item.getProductoId()); 
+            }
+        }
 
         BoletaDTO boleta = new BoletaDTO();
         boleta.setIdComprador(idComprador);
         boleta.setIdVendedor(0);
-        boleta.setMontoTotal(total);
-        boleta.setDetalle("Compra desde Carrito ID: " + idCarrito + " con " + items.size() + " productos distintos.");
+        boleta.setMontoTotal(carrito.getTotal());
+        boleta.setDetalle("Compra desde Carrito ID: " + idCarrito + " con " + carrito.getItems().size() + " productos distintos.");
         BoletaDTO boletaGenerada = boletaClient.generarBoleta(boleta);
 
-    Compra compra = new Compra();
-    compra.setIdComprador(idComprador);
-    compra.setIdVenta(idCarrito);
 
-    compra.setTotalPagado(total);
-    compra.setFechaCompra(new Date());
+        Compra compra = new Compra();
+        compra.setIdComprador(idComprador);
+        compra.setIdVenta(idCarrito); 
+        compra.setTotalPagado(carrito.getTotal());
+        compra.setFechaCompra(new Date());
 
     Compra compraGuardada = repo.save(compra);   
     CompraBoletaDTO c1 = new CompraBoletaDTO(compraGuardada, boletaGenerada);
