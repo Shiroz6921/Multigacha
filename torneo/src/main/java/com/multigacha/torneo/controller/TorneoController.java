@@ -2,8 +2,10 @@ package com.multigacha.torneo.controller;
 
 import java.util.List;
 
+import org.apache.hc.core5.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -57,4 +59,17 @@ public class TorneoController {
             return ResponseEntity.ok(lista);
         }
     }
+
+    @DeleteMapping("/eliminar/{id}")
+    @Operation(summary = "Elimina un torneo por su ID.")
+    public ResponseEntity<?> eliminarTorneo(@PathVariable Integer id) {
+        try {
+            service.borrarTorneo(id);
+            return ResponseEntity.noContent().build(); 
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+
 }

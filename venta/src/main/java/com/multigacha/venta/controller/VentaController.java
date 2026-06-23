@@ -2,37 +2,51 @@ package com.multigacha.venta.controller;
 
 import com.multigacha.venta.model.Venta;
 import com.multigacha.venta.service.VentaService;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/ventas")
-@Tag(name = "Ventas", description = "Operacion Ventas")
+@Tag(name = "Ventas", description = "Gestión de mercado y publicación de cartas")
 public class VentaController {
+
     @Autowired
     private VentaService service;
 
     @PostMapping("/publicar")
-    @Operation(summary = "Publica un producto para la venta.", description = "Recibe un objeto Venta con los detalles de la publicación, incluyendo el ID del vendedor, el ID del producto y el precio, y retorna la publicación de venta creada con su ID asignado.")  
-    public ResponseEntity<Venta> publicarCarta(@RequestBody Venta venta) {
-        return ResponseEntity.ok(service.publicarCarta(venta));
+    @Operation(summary = "Publicar una carta en el mercado")
+    public ResponseEntity<?> publicarCarta(@RequestBody Venta venta) {
+        try {
+            Venta nuevaVenta = service.publicarCarta(venta);
+            return ResponseEntity.status(HttpStatus.CREATED).body(nuevaVenta);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @GetMapping("/{id}")
-    @Operation(summary = "Obtiene los detalles de una publicación de venta por su ID.", description = "Recibe el ID de la publicación de venta y retorna los detalles de la publicación, incluyendo el ID del vendedor, el ID del producto, el precio y el estado de la publicación.")
-    public ResponseEntity<Venta> obtenerVenta(@PathVariable Integer id) {
-        return ResponseEntity.ok(service.obtenerVentaPorId(id));
+    @Operation(summary = "Obtener detalles de una publicación")
+    public ResponseEntity<?> obtenerVenta(@PathVariable Integer id) {
+        try {
+            Venta venta = service.obtenerVentaPorId(id);
+            return ResponseEntity.ok(venta);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
 
     @PutMapping("/{id}/vender")
-    @Operation(summary = "Marca una publicación de venta como vendida.", description = "Recibe el ID de la publicación de venta y la marca como vendida.")
-    public ResponseEntity<Void> marcarVendida(@PathVariable Integer id) {
-        service.marcarComoVendida(id);
-        return ResponseEntity.ok().build();
+    @Operation(summary = "Marcar una carta publicada como VENDIDA")
+    public ResponseEntity<?> marcarComoVendida(@PathVariable Integer id) {
+        try {
+            service.marcarComoVendida(id);
+            return ResponseEntity.ok("Venta concretada con éxito");
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
 }

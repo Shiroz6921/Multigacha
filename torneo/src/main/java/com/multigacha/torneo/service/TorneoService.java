@@ -46,4 +46,12 @@ public class TorneoService {
     public List<inscripciones> obtenerTodo(){
         return repo1.findAll();
     }
+
+    public void borrarTorneo(Integer id) {
+        if (!repo2.existsById(id)) {
+            throw new RuntimeException("Torneo no encontrado"); 
+        }
+        repo2.deleteById(id);
+}
+    
 }
