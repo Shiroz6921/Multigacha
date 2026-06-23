@@ -3,11 +3,9 @@ package com.multigacha.modificacion.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.multigacha.modificacion.model.Empleado;
 import com.multigacha.modificacion.model.Modificacion;
@@ -17,55 +15,66 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
-@RequestMapping("api/v1/modificacion")
-@Tag(name = "Modificacion", description = "Operacion Modificacion")
+@RequestMapping("api/v1/modificaciones") 
+@Tag(name = "Modificacion", description = "Operaciones para gestionar Empleados y su registro de Modificaciones")
 public class Controller {
+
     @Autowired
     private ModificacionService service;
 
     @GetMapping("/empleados")
-    @Operation(summary = "Lista todos los empleados registrados.", description = "Retorna una lista de todos los empleados registrados en el sistema, incluyendo sus detalles como nombre, apellido e ID de contacto.")
+    @Operation(summary = "Lista todos los empleados registrados.")
     public ResponseEntity<List<Empleado>> listarEmpleados() {
         List<Empleado> lista = service.listarEmpleados();
-        if (lista.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.ok(lista);
+        return lista.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(lista);
+    }
+
+    @PostMapping("/empleados")
+    @Operation(summary = "Crea un nuevo empleado validando su ID de contacto.")
+    public ResponseEntity<?> crearEmpleado(@RequestBody Empleado empleado) {
+        try {
+            Empleado nuevoEmpleado = service.crearEmpleado(empleado);
+            return ResponseEntity.status(HttpStatus.CREATED).body(nuevoEmpleado);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
-    @GetMapping("/modificaciones")
-    @Operation(summary = "Lista todas las modificaciones registradas.", description = "Retorna una lista de todas las modificaciones realizadas en el sistema, incluyendo detalles como fecha, empleado responsable e ID del producto modificado.")
+    @GetMapping
+    @Operation(summary = "Lista todas las modificaciones registradas en el sistema.")
     public ResponseEntity<List<Modificacion>> listarModificaciones() {
         List<Modificacion> lista = service.listarModificaciones();
-        if (lista.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.ok(lista);
-        }
+        return lista.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(lista);
     }
 
-    @GetMapping("/productos/modificaciones")
-    @Operation(summary = "Lista las modificaciones por producto.", description = "Retorna una lista de modificaciones realizadas para un producto específico, incluyendo detalles como fecha y empleado responsable.")
-    public ResponseEntity<List<Modificacion>> listarModificacionesPorProducto(Integer idProducto) {
+    @GetMapping("/producto/{idProducto}")
+    @Operation(summary = "Lista las modificaciones para un producto específico.")
+    public ResponseEntity<List<Modificacion>> listarModificacionesPorProducto(@PathVariable Integer idProducto) {
         List<Modificacion> lista = service.mostrarModificacionesPorProducto(idProducto);
-        if (lista.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.ok(lista);
-        }
+        return lista.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(lista);
     }
 
-    @GetMapping("/empleados/modificaciones/{id}")
-    @Operation(summary = "Lista las modificaciones por empleado.", description = "Retorna una lista de modificaciones realizadas por un empleado específico, identificado por su ID, incluyendo detalles como fecha y ID del producto modificado.")
-    public ResponseEntity<List<Modificacion>> listarModificacionesPorEmpleado(@PathVariable Integer idEmpleado) {
+    @GetMapping("/empleado/{idEmpleado}")
+    @Operation(summary = "Lista las modificaciones realizadas por un empleado específico.")
+    public ResponseEntity<?> listarModificacionesPorEmpleado(@PathVariable Integer idEmpleado) {
         try {
-            Empleado empleado = service.getEmpleado(idEmpleado);
-            List<Modificacion> lista = service.listarModificacionesPorEmpledo(empleado);
-            return ResponseEntity.ok(lista);
-        } catch (Exception e) {
-            return ResponseEntity.notFound().build();
+            List<Modificacion> lista = service.listarModificacionesPorEmpleado(idEmpleado);
+            return lista.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(lista);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 
+    @PostMapping
+    @Operation(summary = "Registra que un empleado modificó un producto.")
+    public ResponseEntity<?> registrarModificacion(
+            @RequestParam Integer idEmpleado, 
+            @RequestParam Integer idProducto) {
+        try {
+            Modificacion nuevaModificacion = service.registrarModificacion(idEmpleado, idProducto);
+            return ResponseEntity.status(HttpStatus.CREATED).body(nuevaModificacion);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 }

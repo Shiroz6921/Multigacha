@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 
 import com.multigacha.modificacion.client.ContactoClient;
 import com.multigacha.modificacion.client.ProductoClient;
-
 import com.multigacha.modificacion.dto.ProductoDTO;
 import com.multigacha.modificacion.model.Empleado;
 import com.multigacha.modificacion.model.Modificacion;
@@ -17,53 +16,64 @@ import com.multigacha.modificacion.repo.ModificacionRepo;
 
 @Service
 public class ModificacionService {
+    
     @Autowired
-    private EmpleadoRepo repo1;
+    private EmpleadoRepo empleadoRepo; 
+    
     @Autowired
-    private ModificacionRepo repo2;
+    private ModificacionRepo modificacionRepo; 
+    
     @Autowired
-    private ContactoClient contacto;
+    private ContactoClient contactoClient;
+    
     @Autowired
-    private ProductoClient producto;
+    private ProductoClient productoClient;
+
 
     public List<Empleado> listarEmpleados() {
-        return repo1.findAll();
-    }
-
-    public List<Modificacion> listarModificaciones() {
-        return repo2.findAll();
-    }
-
-    public List<Modificacion> mostrarModificacionesPorProducto(Integer idProducto) {
-        return repo2.findByIdProducto(idProducto);
-    }
-
-    public List<Modificacion> listarModificacionesPorEmpledo(Empleado empleado) {
-        return repo2.findByEmpleado(empleado);
-    }
-
-    public Empleado mostrarEmpleadoPorModificacion(Integer id) {
-        return repo2.findEmpleadoById(id);
+        return empleadoRepo.findAll();
     }
 
     public Empleado getEmpleado(Integer id) {
-        return repo1.findById(id).get();
+        return empleadoRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Empleado no encontrado con ID: " + id));
     }
 
-    public void crearEmpleado(Empleado empleado) {
-        if (contacto.buscarDTO(empleado.getIdContacto()) != null) {
-            repo1.save(empleado);
+    public Empleado crearEmpleado(Empleado empleado) {
+        if (contactoClient.buscarDTO(empleado.getIdContacto()) == null) {
+            throw new RuntimeException("El contacto con ID " + empleado.getIdContacto() + " no existe.");
         }
+        return empleadoRepo.save(empleado); 
     }
 
-    public Modificacion crearModificacion(Integer idEmpleado, Integer idProducto) {
-        Empleado empleado = repo1.findById(idEmpleado).get();
-        ProductoDTO productoDTO = producto.buscarDTO(idProducto);
+
+
+    public List<Modificacion> listarModificaciones() {
+        return modificacionRepo.findAll();
+    }
+
+    public List<Modificacion> mostrarModificacionesPorProducto(Integer idProducto) {
+        return modificacionRepo.findByIdProducto(idProducto);
+    }
+
+    public List<Modificacion> listarModificacionesPorEmpleado(Integer idEmpleado) {
+        Empleado empleado = getEmpleado(idEmpleado); 
+        return modificacionRepo.findByEmpleado(empleado);
+    }
+
+    public Modificacion registrarModificacion(Integer idEmpleado, Integer idProducto) {
+        Empleado empleado = getEmpleado(idEmpleado);
+
+        ProductoDTO productoDTO = productoClient.buscarDTO(idProducto);
+        if (productoDTO == null) {
+            throw new RuntimeException("El producto con ID " + idProducto + " no existe en el catálogo.");
+        }
+
         Modificacion modificacion = new Modificacion();
         modificacion.setEmpleado(empleado);
         modificacion.setFecha(new Date());
         modificacion.setIdProducto(productoDTO.getId());
-        return modificacion;
-    }
 
+        return modificacionRepo.save(modificacion);
+    }
 }
