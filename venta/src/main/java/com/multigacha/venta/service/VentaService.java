@@ -21,14 +21,13 @@ public class VentaService {
     private ClienteClient clienteClient;
     @Autowired
     private CatalogoClient catalogoClient;
-    @Autowired
-    private IntercambioClient intercambioClient;
 
     public Venta publicarCarta(Venta venta) {
         
         clienteClient.buscarPorId(venta.getIdVendedor());
         catalogoClient.buscarProductoPorId(venta.getIdProducto());
-        List<ProductoClienteDTO> inventarioDelJugador = intercambioClient.listarInventariosPorCliente(venta.getIdVendedor());
+        List<ProductoClienteDTO> inventarioDelJugador = 
+        clienteClient.obtenerInventario(venta.getIdVendedor());
 
         boolean poseeLaCarta = false;
         for (ProductoClienteDTO item : inventarioDelJugador) {

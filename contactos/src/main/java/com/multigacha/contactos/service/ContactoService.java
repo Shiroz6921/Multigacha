@@ -14,26 +14,31 @@ public class ContactoService {
     private ContactoRepo repo;
 
     public Contacto getContacto(Integer id){
-        return repo.findById(id).get();
+        return repo.findById(id).orElseThrow(() -> new RuntimeException("Contacto no encontrado"));
     }
+
     public List<Contacto> listarContactos(){
         return repo.findAll();
     }
-    public void addContacto(Contacto contacto){
-        repo.save(contacto);
-    }
-    public void deleteContacto(Integer id){
-        repo.deleteById(id);
-    }
-    public Contacto actualizarContacto(Contacto contactoNuevo){
-        Contacto contactoViejo = repo.findById(contactoNuevo.getId()).get();
-        if (contactoViejo.equals(null)){
-            return null;
-        }else{
-            contactoViejo.setTelefono(contactoNuevo.getTelefono());
-            contactoViejo.setDireccion(contactoNuevo.getDireccion());
-            return contactoViejo;
-        }
+
+    public Contacto addContacto(Contacto contacto){
+        return repo.save(contacto);
     }
 
+    public void deleteContacto(Integer id){
+       if(!repo.existsById(id)){
+        throw new RuntimeException("Contacto no encontrado");
+    }
+        repo.deleteById(id);
+    }
+
+    public Contacto actualizarContacto(Contacto contactoNuevo){
+        Contacto contactoViejo = repo.findById(contactoNuevo.getId())
+            .orElseThrow(() -> new RuntimeException("Contacto no encontrado"));
+            contactoViejo.setTelefono(contactoNuevo.getTelefono());
+            contactoViejo.setDireccion(contactoNuevo.getDireccion());
+            return repo.save(contactoViejo);
+    }
 }
+
+
