@@ -18,7 +18,6 @@ import java.util.List;
 
 import static org.mockito.Mockito.when;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.doThrow;
 
 import com.multigacha.contactos.model.Contacto;
