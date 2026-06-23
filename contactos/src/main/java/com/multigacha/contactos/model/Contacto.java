@@ -20,14 +20,15 @@ import lombok.NoArgsConstructor;
 public class Contacto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Schema(description = "Identificador único del contacto", example = "1")
     private Integer id;
 
     @Column(nullable = false, length = 8)
-    @Schema(description = "Número de teléfono del cliente")
+    @Schema(description = "Número de teléfono del cliente", example = "12345678")
     private Integer telefono;
 
     @Column
-    @Schema(description = "Dirección del cliente")
+    @Schema(description = "Dirección del cliente", example = "Calle Principal 123")
     private String direccion;
 
 }

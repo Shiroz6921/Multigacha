@@ -14,7 +14,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.multigacha.clientes.dto.ClienteDTO;
+import com.multigacha.clientes.dto.InventarioDTO;
 import com.multigacha.clientes.model.Cliente;
+import com.multigacha.clientes.model.InventarioCliente;
 import com.multigacha.clientes.service.ClienteService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -69,6 +71,27 @@ public class ClienteController {
     public ResponseEntity<Cliente> actualizar(@PathVariable Integer id, @RequestBody ClienteDTO nuevo) {
         try {
             return ResponseEntity.ok(servicio.modificarCliente(id, nuevo));
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PostMapping("/inventario/{idCliente}")
+    @Operation(summary = "Agrega productos al inventario de un cliente.", description = "Recibe el ID del cliente y una lista de objetos InventarioDTO con los productos a agregar. Si el cliente existe, se agregan los productos al inventario y retorna una respuesta exitosa. Si el cliente no existe, retorna una respuesta de no encontrado.")
+    public ResponseEntity<Void> agregarProductoAlInventario(@PathVariable Integer idCliente, @RequestBody List<InventarioDTO> inventarioDTO) {
+        try {
+            servicio.agregarProductos(idCliente, inventarioDTO);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("/inventario/{idCliente}")
+    @Operation(summary = "Obtiene el inventario de un cliente por su ID.", description = "Recibe el ID del cliente y retorna una lista de objetos InventarioCliente con los productos en su inventario. Si el cliente no existe, retorna una respuesta de no encontrado.")
+    public ResponseEntity<List<InventarioCliente>> obtenerInventario(@PathVariable Integer idCliente) {
+        try {
+            return ResponseEntity.ok(servicio.obtenerInventarioPorCliente(idCliente));
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
         }

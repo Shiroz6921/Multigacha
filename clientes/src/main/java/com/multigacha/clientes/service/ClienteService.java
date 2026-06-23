@@ -43,7 +43,6 @@ public class ClienteService {
         nuevo.setRun(dto.getRun());
         nuevo.setNombre(dto.getNombre());
         nuevo.setApellido(dto.getApellido());
-        //fecha e inventario se crea solo
         return repo.save(nuevo);
 
         /*CONTACTO DEBERIA CREARSE JUNTO CON EL CLIENTE NO POR SEPARADO    
@@ -54,13 +53,6 @@ public class ClienteService {
 
         contacto.crearContacto(nuevo.getId(),contactoDTO);*/
     }
-
-        /* 
-        public Cliente agregarCliente(Cliente cliente) {
-            //no se puede CREAR ya que necesitas un dato date a no ser que pongas "1995-05-22T14:30:00.000+00:00"  
-            return repo.save(cliente);
-        }
-        */
 
     public void borrarClientePorId(Integer id) {
         repo.deleteById(id);
@@ -79,12 +71,7 @@ public class ClienteService {
 
         contactoDTO.setDireccion(nuevo.getContacto().getDireccion());
         contactoDTO.setTelefono(nuevo.getContacto().getTelefono());
-        //falta el PUT de contacto, no se guarda en ningun lugar la modificacion de contacto 
-        
-        /*no se guardaba la modificacion
-        linea original = return viejo;*/
 
-        //NUEVO
         return repo.save(viejo);
     }
 
@@ -104,4 +91,8 @@ public class ClienteService {
         }
         repoInv.saveAll(guardarProd);
     }
+
+    public List<InventarioCliente> obtenerInventarioPorCliente(Integer idCliente) {
+    return repoInv.findByClienteId(idCliente);
+}
 }

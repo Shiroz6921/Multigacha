@@ -30,7 +30,7 @@ public class ContactoController {
     @Operation(summary = "Lista todos los contactos registrados en el sistema.", description = "Retorna una lista de objetos Contacto con los detalles de cada contacto registrado. Si no hay contactos, retorna una respuesta sin contenido.")
     public ResponseEntity<List<Contacto>> listar(){
         List<Contacto> lista = service.listarContactos();
-        if(lista.equals(null)){
+        if(lista.isEmpty()){
             return ResponseEntity.noContent().build();
         }else{
             return ResponseEntity.ok(lista);
@@ -53,7 +53,7 @@ public class ContactoController {
     public ResponseEntity<Void> agregarContacto(@RequestBody Contacto contacto){
         try {
             service.addContacto(contacto);
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.ok().build();
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
         }
@@ -62,11 +62,11 @@ public class ContactoController {
     @PutMapping("/updt")
     @Operation(summary = "Actualiza la información de un contacto existente.", description = "Modifica los datos de un contacto específico según su ID. Retorna el contacto actualizado si la operación es exitosa.")
     public ResponseEntity<Contacto> actualizarContacto(@RequestBody Contacto contactoNuevo){
-        Contacto contacto = service.actualizarContacto(contactoNuevo);
-        if(contacto.equals(null)){
-            return ResponseEntity.notFound().build();
-        }else{
+        try {
+            Contacto contacto = service.actualizarContacto(contactoNuevo);
             return ResponseEntity.ok(contacto);
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
         }
     }
 

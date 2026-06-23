@@ -137,7 +137,6 @@ public class CatalogoServiceTest {
         });
 
         assertEquals("Producto no encontrado", exception.getMessage());
-
     }
 
     @Test
