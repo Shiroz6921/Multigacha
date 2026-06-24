@@ -55,10 +55,10 @@ public class VentaServiceTest {
         
         productoEnInventario = new ProductoClienteDTO();
         productoEnInventario.setId(1);
-        productoEnInventario.setIdCliente(10);
-        productoEnInventario.setIdProducto(100);
+        productoEnInventario.setIdProducto(100); 
     }
 
+ 
 
     @Test
     void publicarCarta_exitoso() {
@@ -79,8 +79,8 @@ public class VentaServiceTest {
     }
 
     @Test
-    void publicarCarta_VendedorNoExiste() {
-        when(clienteClient.buscarPorId(10)).thenReturn(null);
+    void publicarCarta_VendedorNoExiste_LanzaExcepcion() {
+        when(clienteClient.buscarPorId(10)).thenThrow(new RuntimeException("Feign Error"));
 
         RuntimeException exception = assertThrows(RuntimeException.class, () -> {
             ventaService.publicarCarta(ventaEjem);
@@ -91,32 +91,9 @@ public class VentaServiceTest {
     }
 
     @Test
-    void publicarCarta_NoPoseeLaCarta() {
-        ventaEjem.setIdProducto(999); 
-
-        when(clienteClient.buscarPorId(10)).thenReturn(new ClienteDTO()); 
-        when(catalogoClient.buscarProductoPorId(999)).thenReturn(new ProductoDTO()); 
-
-        List<ProductoClienteDTO> inventarioFalso = new ArrayList<>();
-        inventarioFalso.add(productoEnInventario); // Este tiene la carta 100
-        when(intercambioClient.listarInventariosPorCliente(10)).thenReturn(inventarioFalso);
-
-        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
-            ventaService.publicarCarta(ventaEjem);
-        });
-
-        assertEquals("Error: El jugador no posee esta carta en su inventario para venderla.", exception.getMessage());
-        verify(repo, never()).save(any(Venta.class));
-    }
-
-    @Test
     void publicarCarta_CartaNoExisteEnCatalogo_LanzaExcepcion() {
-        ventaEjem.setIdVendedor(10);
-        ventaEjem.setIdProducto(999);
-
         when(clienteClient.buscarPorId(10)).thenReturn(new ClienteDTO());
-        
-        when(catalogoClient.buscarProductoPorId(999)).thenReturn(null);
+        when(catalogoClient.buscarProductoPorId(100)).thenReturn(null);
 
         RuntimeException exception = assertThrows(RuntimeException.class, () -> {
             ventaService.publicarCarta(ventaEjem);
@@ -127,6 +104,26 @@ public class VentaServiceTest {
         verify(intercambioClient, never()).listarInventariosPorCliente(anyInt());
         verify(repo, never()).save(any(Venta.class));
     }
+
+    @Test
+    void publicarCarta_NoPoseeLaCarta_LanzaExcepcion() {
+        ventaEjem.setIdProducto(999); 
+
+        when(clienteClient.buscarPorId(10)).thenReturn(new ClienteDTO()); 
+        when(catalogoClient.buscarProductoPorId(999)).thenReturn(new ProductoDTO()); 
+
+        List<ProductoClienteDTO> inventarioFalso = new ArrayList<>();
+        inventarioFalso.add(productoEnInventario); 
+        when(intercambioClient.listarInventariosPorCliente(10)).thenReturn(inventarioFalso);
+
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
+            ventaService.publicarCarta(ventaEjem);
+        });
+
+        assertEquals("Error: El jugador no posee esta carta en su inventario para venderla.", exception.getMessage());
+        verify(repo, never()).save(any(Venta.class));
+    }
+
 
 
     @Test
@@ -170,7 +167,6 @@ public class VentaServiceTest {
         });
 
         assertEquals("Publicación no encontrada", exception.getMessage());
-
         verify(repo, never()).save(any(Venta.class));
     }
 }
