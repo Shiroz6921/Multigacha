@@ -25,14 +25,11 @@ public class VentaService {
 
     public Venta publicarCarta(Venta venta) {
 
-        // 1. Verifica que el cliente existe (lanza excepción si no)
         clienteClient.buscarPorId(venta.getIdVendedor());
 
-        // 2. Obtiene el inventario del cliente desde microservicio clientes
         List<ProductoClienteDTO> inventarioDelJugador =
                 clienteClient.obtenerInventarioPorCliente(venta.getIdVendedor());
 
-        // 3. Verifica que el cliente posee la carta que quiere vender
         boolean poseeLaCarta = inventarioDelJugador.stream()
                 .anyMatch(item -> item.getId().equals(venta.getIdProducto()));
 
@@ -42,7 +39,6 @@ public class VentaService {
             );
         }
 
-        // 4. Publica la carta
         venta.setEstado("DISPONIBLE");
         return repo.save(venta);
     }
