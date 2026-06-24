@@ -41,7 +41,6 @@ public class IntercambioController {
         try {
             return ResponseEntity.ok(service.crearIntercambio(dto));
         } catch (RuntimeException e) {
-        e.printStackTrace();
         return ResponseEntity.badRequest().build();
         }
     }
@@ -70,6 +69,6 @@ public class IntercambioController {
             return ResponseEntity.ok(service.intercambio(productoCliente));
         }catch (Exception e){
             return ResponseEntity.badRequest().build();
-        }   
-    }
+    }   
+}
 }

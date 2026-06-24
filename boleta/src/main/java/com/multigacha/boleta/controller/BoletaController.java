@@ -3,6 +3,7 @@ package com.multigacha.boleta.controller;
 import com.multigacha.boleta.model.Boleta;
 import com.multigacha.boleta.service.BoletaService;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
@@ -19,7 +20,8 @@ public class BoletaController {
     private BoletaService service;
 
     @PostMapping("/generar")
-    @Schema(description = "Genera una nueva boleta de transacción de compra-venta entre clientes, incluyendo detalles como monto total, fecha y descripción de la transacción.")    
+    @Operation(summary = "Genera una boleta nueva"
+    ,description = "Genera una nueva boleta de transacción de compra-venta entre clientes, incluyendo detalles como monto total, fecha y descripción de la transacción.")    
     public ResponseEntity<Boleta> generarBoleta(@RequestBody Boleta boleta) {
      try {
             return ResponseEntity.ok(service.generarBoleta(boleta));
@@ -28,7 +30,8 @@ public class BoletaController {
         }
     }    
     @GetMapping("/{id}")
-    @Schema(description = "Obtiene una boleta específica por su ID, proporcionando detalles de la transacción, como monto total, fecha y descripción de la compra-venta.")
+    @Operation(summary = "Busca una boleta especifica por su ID"
+        ,description = "Obtiene una boleta específica por su ID, proporcionando detalles de la transacción, como monto total, fecha y descripción de la compra-venta.")
     public ResponseEntity<Boleta> obtenerBoletaPorId(@PathVariable Integer id) {
         try {
             return ResponseEntity.ok(service.obtenerBoletaPorId(id));
@@ -38,7 +41,8 @@ public class BoletaController {
     }
 
     @GetMapping
-    @Schema(description = "Obtiene todas las boletas registradas, proporcionando una lista completa de transacciones de compra-venta, incluyendo detalles como monto total, fecha y descripción de cada boleta.")
+    @Operation(summary = "Lista todas las boletas"
+        ,description = "Obtiene todas las boletas registradas, proporcionando una lista completa de transacciones de compra-venta, incluyendo detalles como monto total, fecha y descripción de cada boleta.")
     public ResponseEntity<java.util.List<Boleta>> obtenerTodasLasBoletas() {
         List<Boleta> boletas = service.obtenerTodasLasBoletas();
         if (boletas.isEmpty()) {

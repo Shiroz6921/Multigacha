@@ -21,6 +21,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "producto")
+@Schema(description = "Represanta los productos del catalogo")
 public class Producto {
     @Id
     @Column(name ="producto_id")

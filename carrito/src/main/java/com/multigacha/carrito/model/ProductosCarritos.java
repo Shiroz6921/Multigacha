@@ -38,7 +38,7 @@ public class ProductosCarritos {
     @Schema(description = "ID del producto.", example = "101")
     private Integer productoId;
 
-    @Schema(description = "Nombre del producto.", example = "Laptop")
+    @Schema(description = "Nombre del producto.", example = "Pikachu ex")
     private String nombre;
 
     @Schema(description = "Cantidad del producto en el carrito.", example = "2")
