@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.multigacha.contactos.dto.ContactoDTO;
 import com.multigacha.contactos.model.Contacto;
 import com.multigacha.contactos.repo.ContactoRepo;
 
@@ -21,7 +22,10 @@ public class ContactoService {
         return repo.findAll();
     }
 
-    public Contacto addContacto(Contacto contacto){
+    public Contacto addContacto(ContactoDTO contactoDTO){
+        Contacto contacto = new Contacto();
+        contacto.setDireccion(contactoDTO.getDireccion());
+        contacto.setTelefono(contactoDTO.getTelefono());
         return repo.save(contacto);
     }
 
@@ -33,7 +37,7 @@ public class ContactoService {
     }
 
     public Contacto actualizarContacto(Contacto contactoNuevo){
-        Contacto contactoViejo = repo.findById(contactoNuevo.getId())
+            Contacto contactoViejo = repo.findById(contactoNuevo.getId())
             .orElseThrow(() -> new RuntimeException("Contacto no encontrado"));
             contactoViejo.setTelefono(contactoNuevo.getTelefono());
             contactoViejo.setDireccion(contactoNuevo.getDireccion());

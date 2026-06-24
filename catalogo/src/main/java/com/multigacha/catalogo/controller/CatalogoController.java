@@ -36,7 +36,7 @@ public class CatalogoController {
         try {
             return ResponseEntity.ok(service.guardarExpansion(categoria));
         } catch (Exception e) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.badRequest().build();
         }
     }
 

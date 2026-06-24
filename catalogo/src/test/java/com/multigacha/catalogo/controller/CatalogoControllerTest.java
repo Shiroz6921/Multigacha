@@ -127,7 +127,7 @@ public class CatalogoControllerTest {
         mock.perform(post("/api/v1/catalogo/expansion")
             .contentType(MediaType.APPLICATION_JSON)
             .content(json))
-        .andExpect(status().isNotFound());
+        .andExpect(status().isBadRequest());
     }
     
     @Test

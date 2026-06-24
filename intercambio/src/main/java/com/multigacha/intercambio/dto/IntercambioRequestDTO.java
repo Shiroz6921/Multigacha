@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 public class IntercambioRequestDTO {
     @Schema(description = "ID del producto cliente A involucrado en el intercambio.", example = "1")
-    private Integer idProductoA;
+    private Integer ProductoA;
     @Schema(description = "ID del producto cliente B involucrado en el intercambio.", example = "2")
-    private Integer idProductoB;
+    private Integer ProductoB;
 }

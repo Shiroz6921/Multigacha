@@ -44,6 +44,7 @@ public class CarritoService {
                 .orElseThrow(() -> new RuntimeException("Carrito no encontrado"));
 
         ProductosCarritos nuevoItem = new ProductosCarritos();
+        nuevoItem.setCarrito(carrito);
         nuevoItem.setProductoId(prodDto.getId());
         nuevoItem.setNombre(prodDto.getNombre());
         nuevoItem.setPrecio(prodDto.getPrecio());

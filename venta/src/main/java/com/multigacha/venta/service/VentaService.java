@@ -7,43 +7,46 @@ import com.multigacha.venta.dto.ProductoClienteDTO;
 import com.multigacha.venta.model.Venta;
 import com.multigacha.venta.repository.VentaRepository;
 
+import lombok.RequiredArgsConstructor;
+
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class VentaService {
 
+
+public class VentaService {
     @Autowired
     private VentaRepository repo;
     @Autowired
     private ClienteClient clienteClient;
-    @Autowired
-    private CatalogoClient catalogoClient;
 
     public Venta publicarCarta(Venta venta) {
-        
+
+        // 1. Verifica que el cliente existe (lanza excepción si no)
         clienteClient.buscarPorId(venta.getIdVendedor());
-        catalogoClient.buscarProductoPorId(venta.getIdProducto());
-        List<ProductoClienteDTO> inventarioDelJugador = 
-        clienteClient.obtenerInventario(venta.getIdVendedor());
 
-        boolean poseeLaCarta = false;
-        for (ProductoClienteDTO item : inventarioDelJugador) {
-            if (item.getIdProducto().equals(venta.getIdProducto())) {
-                poseeLaCarta = true;
-                break;
-            }
-        }
-        
+        // 2. Obtiene el inventario del cliente desde microservicio clientes
+        List<ProductoClienteDTO> inventarioDelJugador =
+                clienteClient.obtenerInventarioPorCliente(venta.getIdVendedor());
+
+        // 3. Verifica que el cliente posee la carta que quiere vender
+        boolean poseeLaCarta = inventarioDelJugador.stream()
+                .anyMatch(item -> item.getId().equals(venta.getIdProducto()));
+
         if (!poseeLaCarta) {
-            throw new RuntimeException("Error: El jugador no posee esta carta en su inventario para venderla.");
+            throw new RuntimeException(
+                "Error: El jugador no posee esta carta en su inventario para venderla."
+            );
         }
 
+        // 4. Publica la carta
         venta.setEstado("DISPONIBLE");
         return repo.save(venta);
     }
+
 
     public Venta obtenerVentaPorId(Integer id) {
         return repo.findById(id).orElseThrow(() -> new RuntimeException("Publicación no encontrada"));

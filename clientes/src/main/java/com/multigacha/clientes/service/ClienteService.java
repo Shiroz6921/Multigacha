@@ -15,19 +15,12 @@ import com.multigacha.clientes.model.InventarioCliente;
 import com.multigacha.clientes.repo.ClienteRepo;
 import com.multigacha.clientes.repo.InventarioRepository;
 
-import jakarta.transaction.Transactional;
 
 @Service
-@Transactional
 public class ClienteService {
-    @Autowired
-    private ClienteRepo repo;
-
-    @Autowired
-    private ContactoClient contacto;
-
-    @Autowired
-    private InventarioRepository repoInv;
+    @Autowired private ClienteRepo repo;
+    @Autowired private ContactoClient contacto;
+    @Autowired private InventarioRepository repoInv;
 
     public List<Cliente> mostrarClientes() {
         return repo.findAll();
@@ -37,22 +30,27 @@ public class ClienteService {
         return repo.findById(id).orElseThrow(() -> new RuntimeException("Cliente no encontrado"));
     }
 
-    //NUEVO
-    public Cliente clienteMasInventario (ClienteDTO dto){
-        Cliente nuevo = new Cliente();
-        nuevo.setRun(dto.getRun());
-        nuevo.setNombre(dto.getNombre());
-        nuevo.setApellido(dto.getApellido());
-        return repo.save(nuevo);
-
-        /*CONTACTO DEBERIA CREARSE JUNTO CON EL CLIENTE NO POR SEPARADO    
-        EJEMPLO 
+public Cliente clienteMasInventario(ClienteDTO dto) {
+    // 1. Primero guarda el cliente
+    Cliente nuevo = new Cliente();
+    nuevo.setRun(dto.getRun());
+    nuevo.setNombre(dto.getNombre());
+    nuevo.setApellido(dto.getApellido());
+    nuevo.setFechNac(dto.getFechNac());
+    Cliente guardado = repo.save(nuevo); // ← guarda primero
+    
+    // 2. Luego llama al microservicio contactos
+    try {
         ContactoDTO contactoDTO = new ContactoDTO();
         contactoDTO.setTelefono(dto.getContacto().getTelefono());
         contactoDTO.setDireccion(dto.getContacto().getDireccion());
-
-        contacto.crearContacto(nuevo.getId(),contactoDTO);*/
+        contacto.agregarContacto(contactoDTO);
+    } catch(Exception e) {
+        System.out.println("Error llamando a contactos: " + e.getMessage());
     }
+    
+    return guardado;
+}
 
     public void borrarClientePorId(Integer id) {
         repo.deleteById(id);
@@ -61,20 +59,6 @@ public class ClienteService {
     public List<InventarioCliente> inventarioPorIdCliente (Integer clienteId){
         return repoInv.findByClienteId(clienteId);
     }
-    
-    public Cliente modificarCliente(Integer idCliente, ClienteDTO nuevo) {
-        Cliente viejo = repo.findById(idCliente).get();
-        ContactoDTO contactoDTO = contacto.buscarContacto(idCliente);
-        viejo.setNombre(nuevo.getNombre());
-        viejo.setApellido(nuevo.getApellido());
-        viejo.setFechNac(nuevo.getFechNac());
-
-        contactoDTO.setDireccion(nuevo.getContacto().getDireccion());
-        contactoDTO.setTelefono(nuevo.getContacto().getTelefono());
-
-        return repo.save(viejo);
-    }
-
 
     public void agregarProductos(Integer clienteId, List<InventarioDTO> listaDto){
         Cliente cliente = repo.findById(clienteId)

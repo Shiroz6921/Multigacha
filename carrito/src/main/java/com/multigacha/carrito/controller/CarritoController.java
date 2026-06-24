@@ -29,23 +29,39 @@ public class CarritoController {
     @PostMapping("/{id}/crear")
     @Schema(description = "Crea un nuevo carrito para un cliente específico, identificado por su ID. Retorna el carrito creado con su ID asignado.")
     public ResponseEntity<Carrito> crear(@PathVariable Integer id) {
-        return ResponseEntity.ok(service.crearCarrito(id));
-    }
+        try {
+            return ResponseEntity.ok(service.crearCarrito(id));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }    
 
     @PostMapping("/{id}/agregar")
     @Schema(description = "Agrega un producto al carrito de un cliente específico, identificado por su ID. Retorna el carrito actualizado.")
     public ResponseEntity<Carrito> agregar(@PathVariable Integer id, @RequestBody CarritoDTO dto) {
-        return ResponseEntity.ok(service.agregarProducto(id, dto));
-    }
+        try {
+            return ResponseEntity.ok(service.agregarProducto(id, dto));
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+    }    
     @GetMapping
     @Schema(description = "Lista todos los carritos disponibles.")  
     public ResponseEntity<List<Carrito>> listar() {
-        return ResponseEntity.ok(service.listarTodos());
+        List<Carrito> carrito = service.listarTodos();
+        if (carrito.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(carrito);
     }
 
     @GetMapping("/{id}")
     @Schema(description = "Busca un carrito por su ID.")
     public ResponseEntity<Carrito> buscarPorId(@PathVariable Integer id){
-        return ResponseEntity.ok(service.buscarId(id));
-    }
+        try {
+            return ResponseEntity.ok(service.buscarId(id));
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+    }  
 }

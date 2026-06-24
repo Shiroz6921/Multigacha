@@ -9,7 +9,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-@FeignClient(name = "carrito", url = "http://localhost:8082/api/v1/carrito")
+@FeignClient(name = "carritoMS", url = "http://localhost:8090/api/v1/carrito")
 public interface CarritoClient {
     @GetMapping("/{id}")
     CarritoDTO buscarPorId(@PathVariable("id") Integer id);

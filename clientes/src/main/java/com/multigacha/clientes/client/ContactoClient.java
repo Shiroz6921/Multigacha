@@ -1,13 +1,15 @@
 package com.multigacha.clientes.client;
 
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import com.multigacha.clientes.dto.ContactoDTO;
 
-@FeignClient(name = "contactos", url = "http://localhost:8086/api/v1/contactos")
+import org.springframework.web.bind.annotation.RequestBody;
+
+
+@FeignClient(name = "contactosMS")
 public interface ContactoClient {
-    @GetMapping("/{id}")
-    ContactoDTO buscarContacto(@PathVariable("id") Integer id);
+    @PostMapping("/add")
+    void agregarContacto(@RequestBody ContactoDTO contacto);
 }

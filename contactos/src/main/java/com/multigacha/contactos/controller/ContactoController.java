@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.multigacha.contactos.dto.ContactoDTO;
 import com.multigacha.contactos.model.Contacto;
 import com.multigacha.contactos.service.ContactoService;
 
@@ -50,9 +51,9 @@ public class ContactoController {
 
     @PostMapping("/add")
     @Operation(summary = "Agrega un nuevo contacto.", description = "Registra un nuevo contacto en el sistema. Retorna una respuesta de éxito si el contacto es agregado correctamente.")
-    public ResponseEntity<Void> agregarContacto(@RequestBody Contacto contacto){
+    public ResponseEntity<Void> agregarContacto(@RequestBody ContactoDTO contactoDTO){
         try {
-            service.addContacto(contacto);
+            service.addContacto(contactoDTO);
             return ResponseEntity.ok().build();
         } catch (Exception e) {
             return ResponseEntity.notFound().build();

@@ -42,7 +42,12 @@ public class ClienteController {
     @PostMapping
     @Operation(summary = "Crea un nuevo cliente con su inventario asociado.", description = "Recibe un objeto ClienteDTO con los detalles del cliente a crear, incluyendo su inventario inicial. Retorna el cliente creado con su ID asignado y el inventario asociado.")
     public ResponseEntity<Cliente> crear (@RequestBody ClienteDTO dto) {
-        return ResponseEntity.ok(servicio.clienteMasInventario(dto));
+        try{
+            servicio.clienteMasInventario(dto);
+        return ResponseEntity.ok().build();
+        } catch(Exception e){
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @DeleteMapping("/{id}")
@@ -66,15 +71,6 @@ public class ClienteController {
         }
     }
 
-    @PutMapping("/actualizar/{id}")
-    @Operation(summary = "Actualiza los datos de un cliente por su ID.", description = "Recibe el ID del cliente a actualizar y un objeto ClienteDTO con los nuevos datos. Si el cliente existe, retorna el objeto Cliente actualizado. Si el cliente no existe, retorna una respuesta de no encontrado.")
-    public ResponseEntity<Cliente> actualizar(@PathVariable Integer id, @RequestBody ClienteDTO nuevo) {
-        try {
-            return ResponseEntity.ok(servicio.modificarCliente(id, nuevo));
-        } catch (Exception e) {
-            return ResponseEntity.notFound().build();
-        }
-    }
 
     @PostMapping("/inventario/{idCliente}")
     @Operation(summary = "Agrega productos al inventario de un cliente.", description = "Recibe el ID del cliente y una lista de objetos InventarioDTO con los productos a agregar. Si el cliente existe, se agregan los productos al inventario y retorna una respuesta exitosa. Si el cliente no existe, retorna una respuesta de no encontrado.")

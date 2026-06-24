@@ -20,8 +20,8 @@ public class IntercambioService {
     private ProductoClienteRepo repo2;
 
     public Intercambio crearIntercambio (IntercambioRequestDTO dto) {
-        ProductoCliente inventarioA = repo2.findByIdProducto(dto.getIdProductoA());
-        ProductoCliente inventarioB = repo2.findByIdProducto(dto.getIdProductoB());
+        ProductoCliente inventarioA = repo2.findByIdProducto(dto.getProductoA());
+        ProductoCliente inventarioB = repo2.findByIdProducto(dto.getProductoB());
         if (inventarioA == null || inventarioB == null){
             throw new RuntimeException("Uno o ambos productos no se encuentran");
         }
@@ -45,4 +45,8 @@ public class IntercambioService {
         return repo1.findAll();
     }
 
+    public Intercambio buscarPorId(Integer id){
+        return repo1.findById(id).orElseThrow(() -> new RuntimeException("Intercambio no encontrado"));
+
+    }
 }

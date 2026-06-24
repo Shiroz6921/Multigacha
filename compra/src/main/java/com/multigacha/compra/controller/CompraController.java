@@ -24,12 +24,21 @@ public class CompraController {
     @PostMapping("/carrito/{idComprador}/{idCarrito}")
     @Operation(summary = "Procesa la compra de un carrito específico para un cliente identificado por su ID, generando una boleta de transacción con los detalles de la compra, incluyendo el monto total, fecha y descripción de la transacción.")
     public ResponseEntity<CompraBoletaDTO> procesarCarrito(@PathVariable Integer idComprador, @PathVariable Integer idCarrito) {
-        return ResponseEntity.ok(service.procesarCompraDesdeCarrito(idComprador, idCarrito));
+        try {
+        CompraBoletaDTO resultado =service.procesarCompraDesdeCarrito(idComprador, idCarrito);
+            return ResponseEntity.ok(resultado);
+        } catch(Exception e){
+            return ResponseEntity.badRequest().build();
+        }
     }
     
     @GetMapping
     @Operation(summary = "Lista todas las compras realizadas en el sistema.", description = "Retorna una lista de objetos Compra con los detalles de cada compra realizada. Si no hay compras, retorna una respuesta sin contenido.")
-    public List<Compra> todo (){
-        return service.listar();
+    public ResponseEntity<List<Compra>> todo (){
+       if (service.listar().isEmpty()) {
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.ok(service.listar());
+        }
     }
 }

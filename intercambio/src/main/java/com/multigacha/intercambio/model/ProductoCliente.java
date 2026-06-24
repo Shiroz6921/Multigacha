@@ -27,5 +27,4 @@ public class ProductoCliente {
     @Column(name = "producto_id")
     @Schema(description = "ID del producto.", example = "1")
     private Integer idProducto;
-
 }

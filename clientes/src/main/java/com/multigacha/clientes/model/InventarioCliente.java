@@ -1,5 +1,7 @@
 package com.multigacha.clientes.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -34,7 +36,9 @@ public class InventarioCliente {
 
     @ManyToOne
     @JoinColumn(name = "cliente_id", nullable = false) 
+    @JsonIgnoreProperties("inventarios")
     @Schema(description = "Cliente al que pertenece el inventario.", example = "1")
     private Cliente cliente;
 
+    
 }

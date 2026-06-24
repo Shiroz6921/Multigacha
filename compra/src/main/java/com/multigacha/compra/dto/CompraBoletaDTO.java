@@ -12,9 +12,5 @@ public class CompraBoletaDTO {
 
     private Compra compra;
     private BoletaDTO boletaDTO;
-    public Compra getCompra() { return compra; }
-    public void setCompra(Compra compra) { this.compra = compra; }
 
-    public BoletaDTO getBoletaDTO() { return boletaDTO; }
-    public void setBoletaDTO(BoletaDTO boletaDTO) { this.boletaDTO = boletaDTO; }
 }

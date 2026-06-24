@@ -40,13 +40,9 @@ public class ModificacionService {
     }
 
     public Empleado crearEmpleado(Empleado empleado) {
-        if (contactoClient.buscarDTO(empleado.getIdContacto()) == null) {
-            throw new RuntimeException("El contacto con ID " + empleado.getIdContacto() + " no existe.");
-        }
+
         return empleadoRepo.save(empleado); 
     }
-
-
 
     public List<Modificacion> listarModificaciones() {
         return modificacionRepo.findAll();
@@ -73,7 +69,7 @@ public class ModificacionService {
         modificacion.setEmpleado(empleado);
         modificacion.setFecha(new Date());
         modificacion.setIdProducto(productoDTO.getId());
-
+        
         return modificacionRepo.save(modificacion);
     }
 }

@@ -20,12 +20,13 @@ import static org.mockito.Mockito.when;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 
+import com.multigacha.contactos.dto.ContactoDTO;
 import com.multigacha.contactos.model.Contacto;
 import com.multigacha.contactos.service.ContactoService;
 
 @WebMvcTest(ContactoController.class)//levanta solo la capa web, no la bd
 
-public class ContactosControllerService {
+public class ContactosControllerTest {
 
     @Autowired 
     private MockMvc mock; //mock que simula las peticiones http
@@ -34,6 +35,7 @@ public class ContactosControllerService {
     private ContactoService service; //service falso
 
     private Contacto contacto;
+    private ContactoDTO dto;
 
     @BeforeEach
     void setUp() {
@@ -41,6 +43,11 @@ public class ContactosControllerService {
         contacto.setId(1);
         contacto.setTelefono(123456789);
         contacto.setDireccion("Calle Falsa 123");
+
+        dto = new ContactoDTO();
+        dto.setId(1);
+        dto.setDireccion("calle falsa 2");
+        dto.setTelefono(1234566);
     }
 
     @Test
@@ -80,7 +87,7 @@ public class ContactosControllerService {
 
     @Test
     void agregarContacto_Retorna200() throws Exception {
-        when(service.addContacto(contacto)).thenReturn(contacto);
+        when(service.addContacto(dto)).thenReturn(contacto);
 
         mock.perform(post("/api/v1/contactos/add")
             .contentType("application/json")
@@ -90,7 +97,7 @@ public class ContactosControllerService {
 
     @Test
     void agregarContacto_Retorna404() throws Exception {
-        when(service.addContacto(any(Contacto.class))).thenThrow(new RuntimeException("Error al agregar contacto"));
+        when(service.addContacto(any(ContactoDTO.class))).thenThrow(new RuntimeException("Error al agregar contacto"));
 
         mock.perform(post("/api/v1/contactos/add")
             .contentType("application/json")

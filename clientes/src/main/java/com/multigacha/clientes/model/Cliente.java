@@ -42,29 +42,13 @@ public class Cliente {
     @Column(length = 40, nullable = false)
     @Schema(description = "Apellido del cliente.", example = "Pérez")
     private String apellido;
-    /*ORIGINAL
-    @Column(nullable = false) 
-    original = private Date fechNac;*/
 
-    
-    /*agregar esto para añadir fechas = @JsonFormat(pattern = "dd/MM/yyyy", timezone = "GMT-4")
-    alternativas = 1.-@CreationTimestamp
-                      private LocalDate fechNac;
-                    
-                    2.-@CreationTimestamp
-                       @Temporal(TemporalType.DATE) .DATE para guadar dd/mm/yyyy
-                       @Column(name = "fech_nac", nullable = false)
-                       private Date fechNac;*/
-    //NUEVO
     @CreationTimestamp
     @Column(nullable = false) 
     @Schema(description = "Fecha de nacimiento del cliente.", example = "1990-01-01")
     private LocalDate fechNac;
 
-    /*private Integer idContacto
-    le pide un id al cliente XD*/
 
-    //NUEVO
     @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true)
     @Schema(description = "Lista de inventarios del cliente.")
     private List<InventarioCliente> inventarios = new ArrayList<>();

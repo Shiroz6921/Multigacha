@@ -31,7 +31,4 @@ public class Empleado {
     @Schema(description = "Apellido del empleado.", example = "Pérez")
     private String apellido;
 
-    @Column(name = "contacto_id", nullable = false)
-    @Schema(description = "ID del contacto del empleado.", example = "1")
-    private Integer idContacto;
 }

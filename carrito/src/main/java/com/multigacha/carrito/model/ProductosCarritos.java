@@ -1,5 +1,7 @@
 package com.multigacha.carrito.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -29,6 +31,7 @@ public class ProductosCarritos {
 
     @ManyToOne
     @JoinColumn(name = "carrito_id")
+    @JsonIgnore
     @Schema(description = "El carrito al que pertenece este producto.")
     private Carrito carrito;
 

@@ -61,4 +61,7 @@ public class CompraService {
         return repo.findAll();
     } 
 
+    public Compra buscarPorId(Integer id){
+        return repo.findById(id).orElseThrow(() -> new RuntimeException("Compra no encontrado"));
+    }
 } 
