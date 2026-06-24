@@ -24,15 +24,15 @@ import com.multigacha.contactos.dto.ContactoDTO;
 import com.multigacha.contactos.model.Contacto;
 import com.multigacha.contactos.service.ContactoService;
 
-@WebMvcTest(ContactoController.class)//levanta solo la capa web, no la bd
+@WebMvcTest(ContactoController.class)
 
 public class ContactosControllerTest {
 
     @Autowired 
-    private MockMvc mock; //mock que simula las peticiones http
+    private MockMvc mock; 
 
     @MockitoBean
-    private ContactoService service; //service falso
+    private ContactoService service;
 
     private Contacto contacto;
     private ContactoDTO dto;
