@@ -1,10 +1,6 @@
 package com.multigacha.venta.service;
 
-import com.multigacha.venta.client.CatalogoClient;
 import com.multigacha.venta.client.ClienteClient;
-import com.multigacha.venta.client.IntercambioClient;
-import com.multigacha.venta.dto.ClienteDTO;
-import com.multigacha.venta.dto.ProductoDTO;
 import com.multigacha.venta.dto.ProductoClienteDTO;
 import com.multigacha.venta.model.Venta;
 import com.multigacha.venta.repository.VentaRepository;
@@ -21,7 +17,6 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -32,12 +27,6 @@ public class VentaServiceTest {
     
     @Mock
     private ClienteClient clienteClient;
-    
-    @Mock
-    private CatalogoClient catalogoClient;
-    
-    @Mock
-    private IntercambioClient intercambioClient;
 
     @InjectMocks
     private VentaService ventaService;
@@ -54,20 +43,19 @@ public class VentaServiceTest {
         ventaEjem.setPrecio(15000.0);
         
         productoEnInventario = new ProductoClienteDTO();
-        productoEnInventario.setId(1);
-        productoEnInventario.setIdCliente(10);
-        productoEnInventario.setIdProducto(100);
+        productoEnInventario.setId(100);
+        productoEnInventario.setCantidadProd(1);
+        productoEnInventario.setNombre("Carta Rara");
     }
 
 
     @Test
     void publicarCarta_exitoso() {
-        when(clienteClient.buscarPorId(10)).thenReturn(new ClienteDTO()); 
-        when(catalogoClient.buscarProductoPorId(100)).thenReturn(new ProductoDTO()); 
+        doNothing().when(clienteClient).buscarPorId(10);
         
         List<ProductoClienteDTO> inventarioFalso = new ArrayList<>();
         inventarioFalso.add(productoEnInventario);
-        when(intercambioClient.listarInventariosPorCliente(10)).thenReturn(inventarioFalso);
+        when(clienteClient.obtenerInventarioPorCliente(10)).thenReturn(inventarioFalso);
         
         when(repo.save(any(Venta.class))).thenReturn(ventaEjem);
 
@@ -79,52 +67,35 @@ public class VentaServiceTest {
     }
 
     @Test
-    void publicarCarta_VendedorNoExiste() {
-        when(clienteClient.buscarPorId(10)).thenReturn(null);
+    void publicarCarta_VendedorNoExiste_LanzaExcepcion() {
+        doThrow(new RuntimeException("Cliente no encontrado en otro Microservicio"))
+            .when(clienteClient).buscarPorId(10);
 
         RuntimeException exception = assertThrows(RuntimeException.class, () -> {
             ventaService.publicarCarta(ventaEjem);
         });
 
-        assertEquals("El vendedor no existe.", exception.getMessage());
+        assertEquals("Cliente no encontrado en otro Microservicio", exception.getMessage());
+        
+        verify(clienteClient, never()).obtenerInventarioPorCliente(anyInt());
         verify(repo, never()).save(any(Venta.class));
     }
 
     @Test
-    void publicarCarta_NoPoseeLaCarta() {
+    void publicarCarta_NoPoseeLaCarta_LanzaExcepcion() {
         ventaEjem.setIdProducto(999); 
 
-        when(clienteClient.buscarPorId(10)).thenReturn(new ClienteDTO()); 
-        when(catalogoClient.buscarProductoPorId(999)).thenReturn(new ProductoDTO()); 
+        doNothing().when(clienteClient).buscarPorId(10);
 
         List<ProductoClienteDTO> inventarioFalso = new ArrayList<>();
-        inventarioFalso.add(productoEnInventario); // Este tiene la carta 100
-        when(intercambioClient.listarInventariosPorCliente(10)).thenReturn(inventarioFalso);
+        inventarioFalso.add(productoEnInventario); 
+        when(clienteClient.obtenerInventarioPorCliente(10)).thenReturn(inventarioFalso);
 
         RuntimeException exception = assertThrows(RuntimeException.class, () -> {
             ventaService.publicarCarta(ventaEjem);
         });
 
         assertEquals("Error: El jugador no posee esta carta en su inventario para venderla.", exception.getMessage());
-        verify(repo, never()).save(any(Venta.class));
-    }
-
-    @Test
-    void publicarCarta_CartaNoExisteEnCatalogo_LanzaExcepcion() {
-        ventaEjem.setIdVendedor(10);
-        ventaEjem.setIdProducto(999);
-
-        when(clienteClient.buscarPorId(10)).thenReturn(new ClienteDTO());
-        
-        when(catalogoClient.buscarProductoPorId(999)).thenReturn(null);
-
-        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
-            ventaService.publicarCarta(ventaEjem);
-        });
-
-        assertEquals("El producto no existe en el catálogo.", exception.getMessage());
-        
-        verify(intercambioClient, never()).listarInventariosPorCliente(anyInt());
         verify(repo, never()).save(any(Venta.class));
     }
 
@@ -170,7 +141,6 @@ public class VentaServiceTest {
         });
 
         assertEquals("Publicación no encontrada", exception.getMessage());
-
         verify(repo, never()).save(any(Venta.class));
     }
 }
