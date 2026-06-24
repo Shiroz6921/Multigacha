@@ -19,6 +19,9 @@ public class IntercambioService {
     @Autowired
     private ProductoClienteRepo repo2;
 
+    public ProductoCliente intercambio (ProductoCliente productoCliente){
+        return repo2.save(productoCliente);
+    }
     public Intercambio crearIntercambio (IntercambioRequestDTO dto) {
         ProductoCliente inventarioA = repo2.findByIdProducto(dto.getProductoA());
         ProductoCliente inventarioB = repo2.findByIdProducto(dto.getProductoB());

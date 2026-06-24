@@ -1,5 +1,6 @@
 package com.multigacha.intercambio.controller;
 
+import com.multigacha.intercambio.repo.ProductoClienteRepo;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,13 +8,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.multigacha.intercambio.client.ProductoClient;
 import com.multigacha.intercambio.dto.IntercambioRequestDTO;
 import com.multigacha.intercambio.model.Intercambio;
+import com.multigacha.intercambio.model.ProductoCliente;
 import com.multigacha.intercambio.service.IntercambioService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -23,8 +27,13 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RequestMapping("/api/v1/intercambios")
 @Tag(name = "Intercambio", description = "Operacion Intercambio")
 public class IntercambioController {
+    private final ProductoClienteRepo productoClienteRepo;
     @Autowired
     private IntercambioService service;
+
+    IntercambioController(ProductoClienteRepo productoClienteRepo) {
+        this.productoClienteRepo = productoClienteRepo;
+    }
 
     @PutMapping("/intercambiar")
     @Operation(summary = "Crea un nuevo intercambio entre clientes.", description = "Recibe un objeto IntercambioRequestDTO con los detalles del intercambio a realizar, incluyendo los IDs de los productos y clientes involucrados, y retorna el intercambio creado con su ID asignado.")
@@ -32,7 +41,8 @@ public class IntercambioController {
         try {
             return ResponseEntity.ok(service.crearIntercambio(dto));
         } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(null);
+        e.printStackTrace();
+        return ResponseEntity.badRequest().build();
         }
     }
 
@@ -54,4 +64,12 @@ public class IntercambioController {
         return ResponseEntity.ok(intercambios);
     }
 
+    @PostMapping("/generar")
+    public ResponseEntity<ProductoCliente> crear(@RequestBody ProductoCliente productoCliente){
+        try{
+            return ResponseEntity.ok(service.intercambio(productoCliente));
+        }catch (Exception e){
+            return ResponseEntity.badRequest().build();
+        }   
+    }
 }

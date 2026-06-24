@@ -6,9 +6,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import com.multigacha.intercambio.dto.ClienteDTO;
 
-@FeignClient(name = "clientes", url = "http://localhost:3306")
+@FeignClient(name = "clientesMS",url = "http://localhost:8083/api/v1/clientes")
 public interface ClienteClient {
     @GetMapping("api/v1/clientes/{id}")
-    ClienteDTO buscarDTO(@PathVariable("id") Integer id);
+    ClienteDTO buscarPorId(@PathVariable("id") Integer id);
 
 }

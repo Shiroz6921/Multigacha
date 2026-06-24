@@ -11,7 +11,7 @@ import com.multigacha.intercambio.model.ProductoCliente;
 public interface ProductoClienteRepo extends JpaRepository<ProductoCliente, Integer> {
 
     List<ProductoCliente> findByIdCliente(Integer idCliente);
-
+    
     ProductoCliente findByIdProducto(Integer idProducto);
 
     Integer findIdClienteById(Integer id);
